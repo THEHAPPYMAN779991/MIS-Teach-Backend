@@ -1,0 +1,69 @@
+# ========== Python ==========
+__pycache__/
+*.pyc
+*.pyo
+*.py[cod]
+.env
+.env.*
+!/.env.example
+venv/
+*.egg-info/
+*.egg
+dist/
+build/
+api.env
+*.env
+api.env/
+
+# ========== Local credentials ==========
+credentials*.json
+service-account*.json
+service_account*.json
+token.json
+security_key
+*.pem
+*.key
+
+# ========== Local runtime logs ==========
+logs/
+*.log
+
+# ========== Private / generated research assets ==========
+# Source code stays in tool/ and experiments/, but local datasets, OCR/PDF
+# outputs, database files, and historical backups are not publishable.
+/data/
+/backup/
+/outputs/
+/instance/
+/原檔/
+/新增資料夾/
+/修 正/
+/src/原檔/
+/src/新增資料夾/
+/src/改檔/
+/experiments/**/*.json
+
+# ========== IDE & 系統檔案 ==========
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.history/
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+
+# ========== 測試與暫存檔 ==========
+coverage/
+tmp/
+
+# ========== RAG資料 ==========
+src/rag_sys/data/outputs/
+src/rag_sys/data/pdfs/
+src/rag_sys/data/knowledge_db/
+/src/rag_sys/data/
+
+/src/picture/

@@ -17,9 +17,12 @@ graphrag_bp = Blueprint("graphrag", __name__, url_prefix="/api/graphrag")
 
 # ============== 設定 ==============
 GRAPHRAG_API_BASE = os.getenv("GRAPHRAG_API_BASE", "http://localhost:8001")
-NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-NEO4J_USER = os.getenv("NEO4J_USERNAME", "neo4j")
-NEO4J_PASS = os.getenv("NEO4J_PASSWORD", "123456789")
+# Direct Neo4j inspection is optional.  Its connection values must always be
+# supplied by the deployer's local environment; source contains no fallback
+# username or password.
+NEO4J_URI = os.getenv("NEO4J_URI", "")
+NEO4J_USER = os.getenv("NEO4J_USERNAME", "")
+NEO4J_PASS = os.getenv("NEO4J_PASSWORD", "")
 NEO4J_DATABASE = os.getenv("NEO4J_DATABASE", "neo4j")
 
 # MIS markdown 教材目錄（用來檢查「在 MIS 教材中查看」按鈕要不要亮）
@@ -31,6 +34,11 @@ _schema_cache = None
 _schema_cache_at = 0.0
 
 
+def _neo4j_configured():
+    """Return whether direct Neo4j access was explicitly configured locally."""
+    return bool(NEO4J_URI and NEO4J_USER and NEO4J_PASS)
+
+
 def _get_driver():
     """共用 Neo4j driver；連線失效時自動重建。
 
@@ -39,6 +47,11 @@ def _get_driver():
     這裡用 verify_connectivity() 健康檢查，失敗就丟掉重建。
     """
     global _driver
+    if not _neo4j_configured():
+        raise RuntimeError(
+            "GraphRAG direct Neo4j access is not configured. "
+            "Set NEO4J_URI, NEO4J_USERNAME, and NEO4J_PASSWORD locally."
+        )
     # 第一次或上次被釋放掉
     if _driver is None:
         _driver = GraphDatabase.driver(

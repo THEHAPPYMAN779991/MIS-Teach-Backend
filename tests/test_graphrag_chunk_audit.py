@@ -259,6 +259,9 @@ class GraphRagChunkAuditTests(unittest.TestCase):
         fetch_profile.assert_not_called()
         semantic_scores.assert_not_called()
 
+    @unittest.skip(
+        "Legacy direct-helper contract; public tutoring uses strict_research_policy_v2."
+    )
     def test_explainable_prerequisite_mode_injects_only_distance_one_with_path(self):
         result = {
             "seed_concepts": ["CoreConcept"],

@@ -7,8 +7,10 @@ from src import ai_teacher
 
 
 class FakeCollection:
-    def __init__(self, documents=None):
+    def __init__(self, documents=None, name=""):
         self.documents = documents or {}
+        self.name = name
+        self.database = None
 
     def find_one(self, query):
         return self.documents.get(str(query.get('_id')))
@@ -17,6 +19,10 @@ class FakeCollection:
 class FakeDatabase:
     def __init__(self, collections):
         self.collections = collections
+        self.name = "test_database"
+        for collection_name, collection in self.collections.items():
+            collection.name = collection_name
+            collection.database = self
 
     def __getitem__(self, name):
         return self.collections.get(name, FakeCollection())

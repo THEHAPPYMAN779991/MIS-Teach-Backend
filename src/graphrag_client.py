@@ -27,9 +27,12 @@ logger = logging.getLogger(__name__)
 
 # ============== 設定 ==============
 GRAPHRAG_API_BASE = os.getenv("GRAPHRAG_API_BASE", "http://localhost:8001")
-NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-NEO4J_USER = os.getenv("NEO4J_USERNAME", "neo4j")
-NEO4J_PASS = os.getenv("NEO4J_PASSWORD", "123456789")
+# Neo4j is optional for the core web application.  Do not retain development
+# credentials in source: direct graph operations are disabled until all three
+# connection values are provided by the local environment.
+NEO4J_URI = os.getenv("NEO4J_URI", "")
+NEO4J_USER = os.getenv("NEO4J_USERNAME", "")
+NEO4J_PASS = os.getenv("NEO4J_PASSWORD", "")
 NEO4J_DATABASE = os.getenv("NEO4J_DATABASE", "neo4j")
 
 # 預設超時（秒）
@@ -42,8 +45,18 @@ QUERY_TIMEOUT = int(os.getenv("GRAPHRAG_QUERY_TIMEOUT", "180"))
 _driver = None
 
 
+def _neo4j_configured() -> bool:
+    """Return whether direct Neo4j access was explicitly configured locally."""
+    return bool(NEO4J_URI and NEO4J_USER and NEO4J_PASS)
+
+
 def _build_driver():
     """建立 Neo4j driver，含 keep-alive 與較短的連線壽命，避免閒置斷線。"""
+    if not _neo4j_configured():
+        raise RuntimeError(
+            "GraphRAG direct Neo4j access is not configured. "
+            "Set NEO4J_URI, NEO4J_USERNAME, and NEO4J_PASSWORD locally."
+        )
     return GraphDatabase.driver(
         NEO4J_URI,
         auth=(NEO4J_USER, NEO4J_PASS),

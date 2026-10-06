@@ -27,6 +27,8 @@ security_key
 # ========== Local runtime logs ==========
 logs/
 *.log
+cache/
+.cache/
 
 # ========== Private / generated research assets ==========
 # Source code stays in tool/ and experiments/, but local datasets, OCR/PDF
@@ -65,5 +67,13 @@ src/rag_sys/data/outputs/
 src/rag_sys/data/pdfs/
 src/rag_sys/data/knowledge_db/
 /src/rag_sys/data/
+
+# Database exports, vector stores, and source documents must remain local.
+*.pdf
+*.sqlite
+*.sqlite3
+*.db
+chromadb/
+neo4j/
 
 /src/picture/
